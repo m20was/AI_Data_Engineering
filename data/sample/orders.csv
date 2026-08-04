@@ -1,0 +1,5 @@
+order_id,order_timestamp,order_date,user_id,r_id,restaurant_city,cuisine,items_count,sales_qty,subtotal,discount,delivery_fee,gst,sales_amount,currency,payment_method,order_status,customer_rating,delivery_time_min
+1,2025-06-11 15:55:36,2025-06-11,18871,366828,"Ameerpet,Hyderabad","Sweets,Desserts",1,1,223,0,0,11,234,INR,UPI,Delivered,4.0,29.0
+2,2024-11-17 17:26:05,2024-11-17,89236,100236,Panipat,Desserts,4,4,648,216,20,32,484,INR,UPI,Cancelled,,
+3,2025-04-23 09:22:46,2025-04-23,91540,224710,"HSR,Bangalore","Beverages,Chinese",4,4,340,127,15,17,245,INR,UPI,Delivered,3.0,42.0
+4,2026-01-24 18:19:11,2026-01-24,8216,379140,"Kukatpally,Hyderabad",Chinese,1,1,77,13,25,4,93,INR,Card,Delivered,,54.0

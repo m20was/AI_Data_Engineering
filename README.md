@@ -18,6 +18,7 @@ End-to-end analytics pipeline for food-delivery data, combining data lake ingest
 ## Repository Layout
 
 - `data/` - sample CSV datasets used as inputs.
+- `data/sample/` - compact Git-friendly subset of the datasets for demos and testing.
 - `aws/iam/` - IAM and trust policies for AWS and Snowflake integration.
 - `snowflake/` - SQL scripts for setup, storage integration, staging, raw tables, and loading.
 - `docs/` - supporting documentation and architecture visuals.
@@ -33,4 +34,5 @@ End-to-end analytics pipeline for food-delivery data, combining data lake ingest
 ## Notes
 
 - The architecture diagram in this README is stored at [docs/architecture.png](docs/architecture.png).
+- Sample datasets are stored in [data/sample/](data/sample/) and are safe to commit to GitHub.
 - SQL setup scripts are ordered to support a step-by-step deployment flow.

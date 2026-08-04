@@ -9,8 +9,10 @@ food_delivery/profiles.yml
 .creds
 
 # Raw data (too large for GitHub)
-data/
+data/*
 .data/
+!data/sample/
+!data/sample/**
 
 # Logs
 logs/
