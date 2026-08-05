@@ -1,0 +1,19 @@
+sources:
+  - name: raw
+    database: FOOD_DELIVERY
+    schema: RAW
+    tables:
+      - name: restaurants
+        description: "This table contains the raw data of restaurants from Food Delivery."
+      - name: users
+        description: "This table contains the raw data of users from Food Delivery."
+      - name: food
+        description: "This table contains the raw data of food items from Food Delivery."
+      - name: menu
+        description: "This table contains the raw data of menus from Food Delivery."
+      - name: orders
+        description: "This table contains the raw data of orders from Food Delivery."
+      - name: order_items
+        description: "This table contains the raw data of order items from Food Delivery."
+      - name: reviews
+        description: "This table contains the raw data of reviews from Food Delivery."

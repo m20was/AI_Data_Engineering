@@ -32,5 +32,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   food_delivery:
     # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+    staging : { +materialized: view, +schema: staging}
+    marts : { +materialized: table, +schema: marts}
+  snapshot:
+    food_delivery: { +materialized: snapshot, +schema: snapshot}
+
