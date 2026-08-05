@@ -54,10 +54,3 @@ The run completed with 7 successful staging views:
 ![Snowflake staging preview](docs/screenshots/snowflake-staging-preview.png)
 
 Captured after validating the dbt setup and opening the Snowflake database explorer on the `STG_RESTAURANTS` staging model. It confirms that the transformed restaurant data is loaded and queryable in the `FOOD_DELIVERY.STAGING` schema, with fields such as restaurant name, city, rating, rating count, cost for two, cuisine, and license number visible in the table view.
-
-## Notes
-
-- The architecture diagram in this README is stored at [docs/architecture.png](docs/architecture.png).
-- The Snowflake preview screenshot is stored at [docs/screenshots/snowflake-staging-preview.png](docs/screenshots/snowflake-staging-preview.png).
-- Sample datasets are stored in [data/sample/](data/sample/) and are safe to commit to GitHub.
-- SQL setup scripts are ordered to support a step-by-step deployment flow.
