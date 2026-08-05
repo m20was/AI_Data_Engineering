@@ -31,6 +31,12 @@ End-to-end analytics pipeline for food-delivery data, combining data lake ingest
 4. AI workflows enrich review data, power RAG search, and generate text-to-SQL responses.
 5. Airflow orchestrates the pipeline, while Streamlit and Snowsight expose the results.
 
+## Snowflake Staging Preview
+
+![Snowflake staging preview](docs/screenshots/snowflake-staging-preview.png)
+
+The image shows the Snowflake database explorer opened on the dbt staging model `STG_RESTAURANTS`. It confirms that the transformed restaurant data is loaded and queryable in the `FOOD_DELIVERY.STAGING` schema, with fields such as restaurant name, city, rating, rating count, cost for two, cuisine, and license number visible in the table view.
+
 ## Notes
 
 - The architecture diagram in this README is stored at [docs/architecture.png](docs/architecture.png).
