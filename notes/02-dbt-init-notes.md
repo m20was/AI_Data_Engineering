@@ -6,7 +6,7 @@ This file documents the `dbt init` run performed inside this project folder.
 
 ```powershell
 cd D:\Workspace\workspace\Analytics\apps\AI_Data_Engineering
-dbt init food_delivery
+food_delivery\dbt init food_delivery
 ```
 
 ## Prompts Answered
@@ -34,4 +34,5 @@ dbt init food_delivery
 ## Notes
 
 - `python-dotenv` reported parse warnings at the start of the run.
+- In this workspace, `dbt` is available from the `food_delivery` folder through the local `dbt.cmd` wrapper.
 - The password was entered interactively and is intentionally not stored here.

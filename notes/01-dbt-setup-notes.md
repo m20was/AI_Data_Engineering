@@ -24,8 +24,16 @@ uv add dbt-snowflake
 
 ## Check the installed version
 
+From the `food_delivery` folder, use the local wrapper:
+
 ```cmd
 dbt --version
+```
+
+If you want to call the venv executable directly:
+
+```cmd
+D:\Workspace\workspace\Analytics\.venv\Scripts\dbt.exe --version
 ```
 
 or
@@ -33,3 +41,7 @@ or
 ```cmd
 uv pip show dbt-snowflake
 ```
+
+## Troubleshooting
+
+If `dbt --version` says it is not recognized in `cmd`, make sure you are inside `D:\Workspace\workspace\Analytics\apps\AI_Data_Engineering\food_delivery` so the local `dbt.cmd` wrapper is on the PATH. If needed, use the full venv path above. In this workspace, activating the venv did not reliably put `dbt` on `PATH`, but calling `dbt.exe` directly worked.
