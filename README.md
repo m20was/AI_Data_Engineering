@@ -65,6 +65,35 @@ Captured after validating the dbt setup and opening the Snowflake database explo
 
 The marts layer turns the cleaned staging models into reusable business tables in the `FOOD_DELIVERY.MARTS` schema.
 
+```mermaid
+flowchart TB
+	subgraph STAGING_MARTS[STAGING_MARTS]
+		direction LR
+
+		subgraph DIMS[DIM TABLES]
+			dim_customer[customer]
+			dim_date[date]
+			dim_food[food]
+			dim_restaurants[rest]
+		end
+
+		subgraph FACTS[FACT TABLES]
+			fct_orders[fct_order]
+			fact_order_items[fct_order_items]
+		end
+
+		subgraph MARTS[MARTS]
+			mart_daily_city_revenune[mart_daily_city_revenune]
+			mart_delivery_sla[mart_delivery_sla]
+			mart_restaurant_performance[mart_restaurant_performance]
+			mart_review_insights[mart_review_insights]
+		end
+
+		DIMS --> FACTS
+		FACTS --> MARTS
+	end
+```
+
 ![Snowflake marts preview](docs/screenshots/snowflake-marts-preview.png)
 
 Dimensions:
