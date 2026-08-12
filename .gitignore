@@ -23,6 +23,7 @@ food_delivery/target/
 food_delivery/dbt_packages/
 food_delivery/logs/
 food_delivery/.user.yml
+food_delivery/dbt.cmd
 
 # Python
 __pycache__/
