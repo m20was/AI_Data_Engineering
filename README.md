@@ -60,3 +60,30 @@ The run completed with 7 successful staging views:
 ![Snowflake staging preview](docs/screenshots/snowflake-staging-preview.png)
 
 Captured after validating the dbt setup and opening the Snowflake database explorer on the `STG_RESTAURANTS` staging model. It confirms that the transformed restaurant data is loaded and queryable in the `FOOD_DELIVERY.STAGING` schema, with fields such as restaurant name, city, rating, rating count, cost for two, cuisine, and license number visible in the table view.
+
+## dbt Marts Layer
+
+The marts layer turns the cleaned staging models into reusable business tables in the `FOOD_DELIVERY.MARTS` schema.
+
+![Snowflake marts preview](docs/screenshots/snowflake-marts-preview.png)
+
+Dimensions:
+
+- `dim_customer`
+- `dim_date`
+- `dim_food`
+- `dim_restaurants`
+
+Facts:
+
+- `fct_orders` - incremental order-level fact table.
+- `fact_order_items` - incremental order item fact table joined to orders.
+
+Analytics marts:
+
+- `mart_daily_city_revenune` - daily city revenue and cancellation metrics.
+- `mart_delivery_sla` - delivery SLA breakdown by city and order hour.
+- `mart_restaurant_performance` - restaurant-level order, revenue, rating, and delivery performance.
+- `mart_review_insights` - review sentiment and topic analysis by city.
+
+These marts provide the curated outputs for reporting, restaurant analysis, delivery monitoring, and AI-driven review insighting.
