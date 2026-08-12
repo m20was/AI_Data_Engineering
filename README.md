@@ -1,12 +1,12 @@
-# Swiggy - Zomato AI Data Engineering Solution
+# Swiggy-Zomato AI Data Engineering Pipeline
 
-End-to-end analytics pipeline for food-delivery data, combining raw CSV ingestion, Snowflake warehouse modeling, dbt transformations, and AI-powered review workflows.
+End-to-end batch data pipeline for food-delivery analytics, combining raw CSV ingestion, Snowflake warehouse modeling, dbt transformations, Airflow orchestration, and AI-powered review workflows.
 
-A complete batch data pipeline that takes Zomato-style food delivery data from raw CSVs all the way to AI-powered analytics:
+A production-style data engineering project that takes Zomato-style food delivery data from raw CSVs to AI-powered analytics:
 
-**Swiggy-Zomato/Food Delivery Dataset → Amazon S3 → Snowflake → dbt → Airflow → AI (OpenAI/Gemini)**
+**Food Delivery Dataset → Amazon S3 → Snowflake → dbt → Airflow → AI (OpenAI)**
 
-The dataset lands in an S3 data lake and flows into Snowflake through a storage integration, where dbt transforms it through medallion layers — RAW (Bronze) tables loaded via `COPY INTO`, cleaned STAGING (Silver) views, and business-ready MARTS (Gold) with dimensions, incremental facts, and aggregate marts. Apache Airflow orchestrates the whole pipeline as one daily DAG. On top of the warehouse sits an AI lane powered by OpenAI: LLM enrichment turns free-text reviews into structured, queryable columns; RAG lets you chat with your reviews; and text-to-SQL lets you query the warehouse in plain English. Streamlit serves the dashboards and AI apps.
+The dataset lands in an S3 data lake and flows into Snowflake through a storage integration, where dbt transforms it through medallion layers: RAW (Bronze) tables loaded via `COPY INTO`, cleaned STAGING (Silver) views, and business-ready MARTS (Gold) with dimensions, incremental facts, and analytics marts. Apache Airflow orchestrates the pipeline as one daily DAG. On top of the warehouse sits an AI layer powered by OpenAI: LLM enrichment turns free-text reviews into structured, queryable columns; RAG enables chat with reviews; and text-to-SQL supports natural language queries over the warehouse. Streamlit serves the dashboards and AI apps.
 
 ## Architecture
 
@@ -15,9 +15,9 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 ## What this project includes
 
 - Source datasets for restaurants, users, orders, items, menu, food, and reviews.
-- AWS S3-based raw landing zone.
-- Snowflake raw, staging, and marts layers.
-- dbt models for clean transformations and curated marts.
+- AWS S3-based raw landing zone with Snowflake storage integration.
+- Snowflake raw, staging, marts, and AI layers.
+- dbt models for medallion transformations, incremental facts, dimensions, and curated marts.
 - AI review enrichment, RAG chat, and text-to-SQL capabilities.
 - Orchestration with Airflow and delivery through Streamlit and Snowsight.
 
@@ -32,8 +32,8 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 ## High-Level Flow
 
 1. CSV files are uploaded to S3 as the raw landing zone.
-2. Snowflake ingests the raw data into bronze tables via storage integration.
-3. dbt builds staging models and curated marts.
+2. Snowflake ingests the raw data into bronze tables via storage integration and `COPY INTO`.
+3. dbt builds staging models, dimensions, incremental facts, and curated marts.
 4. AI workflows enrich review data, power RAG search, and generate text-to-SQL responses.
 5. Airflow orchestrates the pipeline, while Streamlit and Snowsight expose the results.
 
