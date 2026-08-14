@@ -12,6 +12,10 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 
 ![Architecture diagram](docs/architecture.png)
 
+## Warehouse and Marts Overview
+
+![Data warehouse and marts overview](docs/Data_Warehouse_&_Data-Marts_overview.svg)
+
 ## What this project includes
 
 - Source datasets for restaurants, users, orders, items, menu, food, and reviews.
@@ -98,21 +102,21 @@ flowchart TB
 
 Dimensions:
 
-- `dim_customer`
-- `dim_date`
-- `dim_food`
-- `dim_restaurants`
+- `dim_customer` - customer profile dimension with age segmentation.
+- `dim_date` - calendar spine for date-based reporting and time intelligence.
+- `dim_food` - food catalog dimension with vegetarian/non-vegetarian flag.
+- `dim_restaurants` - restaurant dimension with city, cuisine, rating, and cost fields.
 
 Facts:
 
-- `fct_orders` - incremental order-level fact table.
-- `fact_order_items` - incremental order item fact table joined to orders.
+- `fct_orders` - incremental order-level fact table built from staged orders, with delivery, payment, and sales metrics.
+- `fact_order_items` - incremental order-item fact table joined to orders to add timestamps, city, and line-level values.
 
 Analytics marts:
 
-- `mart_daily_city_revenune` - daily city revenue and cancellation metrics.
-- `mart_delivery_sla` - delivery SLA breakdown by city and order hour.
-- `mart_restaurant_performance` - restaurant-level order, revenue, rating, and delivery performance.
+- `mart_daily_city_revenune` - daily city-level order volume, delivery, cancellation, GMV, and AOV metrics.
+- `mart_delivery_sla` - delivery SLA view showing delivered orders by city and hour, plus p50 and p90 delivery times.
+- `mart_restaurant_performance` - restaurant performance summary with order count, revenue, customer rating, and average delivery time.
 - `mart_review_insights` - review sentiment and topic analysis by city.
 
 These marts provide the curated outputs for reporting, restaurant analysis, delivery monitoring, and AI-driven review insighting.
