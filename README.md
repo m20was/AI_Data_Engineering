@@ -178,3 +178,29 @@ dbt docs generate && dbt docs serve
 ```
 
 The catalog is written to `food_delivery/target/catalog.json`. Open `http://localhost:8080` while the server is running, then press `Ctrl+C` to stop it.
+
+## Airflow Setup
+
+Airflow orchestrates the daily pipeline (`food_delivery_batch`) using Docker. See `airflow/docker-compose.yaml`, `airflow/Dockerfile`, and `airflow/dags/food_delivery_batch.py`.
+
+Airflow runs locally on Docker, not a paid cloud service, so orchestration itself is free - only Snowflake/OpenAI usage costs money when the pipeline runs.
+
+These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
+
+From the `airflow` folder:
+
+```bat
+docker compose build
+docker compose up -d
+```
+
+- `docker compose build` builds the custom Airflow image from `Dockerfile`. Run it the first time, and again any time `Dockerfile` changes.
+- `docker compose up -d` starts all the services (`postgres`, `airflow-init`, `apiserver`, `scheduler`, `dag-processor`) in the background, so your terminal is free to use for other things.
+
+Open `http://localhost:8080`, then start `food_delivery_batch` from the Airflow UI. To stop everything:
+
+```bat
+docker compose down
+```
+
+`docker compose down` is the opposite of `docker compose up -d` - it stops and removes the containers (and network), it does not start anything. Airflow's metadata in the `pgdata` volume is kept, so `docker compose up -d` again picks up where you left off. Add `-v` (`docker compose down -v`) only if you also want to delete that stored data.
