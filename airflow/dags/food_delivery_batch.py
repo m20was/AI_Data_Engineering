@@ -3,9 +3,11 @@ from airflow import DAG
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.standard.operators.bash import BashOperator      # Airflow 3 import
 
-DBT = "/opt/airflow/dbt_venv/bin/dbt"
-DBT_PROJECT = "/opt/airflow/dbt/food_delivery"
+DBT = "/opt/airflow/dbt_venv/bin/dbt"           # path to the dbt program inside the container
+DBT_PROJECT = "/opt/airflow/dbt/food_delivery"  # path to our dbt project inside the container
 
+# SQL statements that copy the CSV files sitting in the Snowflake stage into raw tables.
+# dbt can only run SQL against Snowflake tables, not CSV files, so this load has to happen first.
 COPY_RAW = [
     "USE WAREHOUSE FOOD_DELIVERY_WH",
     "COPY INTO FOOD_DELIVERY.RAW.restaurants FROM @FOOD_DELIVERY.RAW.FOOD_DELIVERY_RAW_STAGE/restaurants/  ON_ERROR='CONTINUE'",
@@ -17,33 +19,39 @@ COPY_RAW = [
     "COPY INTO FOOD_DELIVERY.RAW.reviews     FROM @FOOD_DELIVERY.RAW.FOOD_DELIVERY_RAW_STAGE/reviews/",
 ]
 
+# This block defines the pipeline itself: its name, when it runs, and its settings.
 with DAG(
-    dag_id="food_delivery_batch",
-    start_date=datetime(2024, 1, 1),
-    schedule="@daily",
-    catchup=False,
-    tags=["food_delivery", "dbt", "snowflake"],
+    dag_id="food_delivery_batch",   # name shown in the Airflow UI
+    start_date=datetime(2024, 1, 1),  # earliest date this pipeline is allowed to run for
+    schedule="@daily",              # run once every day
+    catchup=False,                  # don't try to run all the missed past days, just move forward
+    tags=["food_delivery", "dbt", "snowflake"],  # labels to help find it in the Airflow UI
     doc_md=__doc__,
 ) as dag:
 
+    # Step 1: load fresh CSV data from the stage into Snowflake's RAW schema.
     reload_raw = SQLExecuteQueryOperator(
         task_id="reload_raw", conn_id="snowflake_default",
         sql=COPY_RAW, split_statements=True, autocommit=True,
     )
 
+    # Step 2: build and test every dbt model except the AI ones (staging, dims, facts, marts).
     dbt_build_core = BashOperator(
         task_id="dbt_build_core",
         bash_command=f"{DBT} build --exclude tag:ai --project-dir {DBT_PROJECT} --profiles-dir {DBT_PROJECT}",
     )
 
+    # Step 3: run the AI script that adds extra info to review text.
     enrich_reviews = BashOperator(
         task_id="enrich_reviews",
         bash_command=f"python /opt/airflow/ai/enrich_reviews.py",
     )
 
+    # Step 4: build and test only the dbt models tagged "ai", now that enriched review data exists.
     dbt_build_ai = BashOperator(
         task_id = "dbt_build_ai",
         bash_command=f"{DBT} build --select tag:ai --project-dir {DBT_PROJECT} --profiles-dir {DBT_PROJECT}"
     )
 
+    # This sets the run order: each step waits for the one before it to finish.
     reload_raw >> dbt_build_core >> enrich_reviews >> dbt_build_ai

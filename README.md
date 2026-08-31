@@ -183,7 +183,11 @@ The catalog is written to `food_delivery/target/catalog.json`. Open `http://loca
 
 Airflow orchestrates the daily pipeline (`food_delivery_batch`) using Docker. See `airflow/docker-compose.yaml`, `airflow/Dockerfile`, and `airflow/dags/food_delivery_batch.py`.
 
+The DAG's first task copies the raw CSV files into Snowflake `RAW` tables via `COPY INTO`, because dbt only runs SQL against Snowflake tables and cannot read CSV files directly - this load has to happen before any dbt model can run.
+
 Airflow runs locally on Docker, not a paid cloud service, so orchestration itself is free - only Snowflake/OpenAI usage costs money when the pipeline runs.
+
+**Required:** `food_delivery/profiles.yml` must exist for the `dbt_build_core`/`dbt_build_ai` tasks to work. The DAG runs dbt with `--profiles-dir /opt/airflow/dbt/food_delivery`, so dbt looks for the profile inside the project folder, not the usual `~/.dbt/profiles.yml`. This file reads `SNOWFLAKE_ACCOUNT`/`SNOWFLAKE_USER`/`SNOWFLAKE_PASSWORD` from environment variables via `env_var(...)`, so it holds no secrets and is safe to commit - do not delete it.
 
 These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
 

@@ -73,7 +73,11 @@ flowchart LR
 
 | Step | What it does | Why it runs here |
 |---|---|---|
+
+**Why `dbt_build_core`/`dbt_build_ai` need `food_delivery/profiles.yml`:** both tasks run dbt with `--profiles-dir /opt/airflow/dbt/food_delivery`, which tells dbt to look for `profiles.yml` inside the mounted project folder instead of the default `~/.dbt/profiles.yml` used for local runs. Without that file, dbt fails with `Could not find profile named 'food_delivery'`. The committed `profiles.yml` reads credentials from `SNOWFLAKE_ACCOUNT`/`SNOWFLAKE_USER`/`SNOWFLAKE_PASSWORD` env vars, so it's safe to keep in the repo - do not delete it.
 | `reload_raw` | Copies restaurant, user, food, menu, order, order-item, and review files into Snowflake's `FOOD_DELIVERY.RAW` schema. | dbt needs fresh raw data before it can clean or transform anything. |
+
+**Why copy CSV files into raw tables at all?** dbt only runs SQL against Snowflake tables - it cannot read CSV files directly. The CSV files start out sitting in a Snowflake stage as plain files, so `reload_raw` runs `COPY INTO` to turn them into real, queryable tables in `FOOD_DELIVERY.RAW`. That is the required starting point (the Bronze/RAW layer) before any `stg_*` staging model can select from them.
 | `dbt_build_core` | Runs `dbt build --exclude tag:ai` - builds and tests every model except the AI ones. | Gets staging, dimensions, facts, and regular marts ready first. |
 | `enrich_reviews` | Runs the `enrich_reviews.py` script. | Adds AI-generated info to reviews, once the core data is ready. |
 | `dbt_build_ai` | Runs `dbt build --select tag:ai` - builds and tests only the AI-tagged models. | These models need the AI-enriched review data from the step before. |
