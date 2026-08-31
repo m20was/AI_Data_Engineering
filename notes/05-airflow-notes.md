@@ -119,4 +119,17 @@ docker compose down
 ```
 
 `docker compose down` is the opposite of `docker compose up -d` - it stops and removes the containers (and network) so nothing keeps running in the background. It does not start anything. Airflow's metadata in the `pgdata` volume is kept, so running `docker compose up -d` again picks up where you left off. Add `-v` (`docker compose down -v`) only if you also want to delete that stored data.
+
+## Current Run Status
+
+![Airflow DAG run](../docs/screenshots/airflow-dag-run.png)
+
+| Task | Status | Notes |
+|---|---|---|
+| `reload_raw` | success | CSV data copied into `FOOD_DELIVERY.RAW` tables. |
+| `dbt_build_core` | success | Built 32 objects (staging views, dims, facts) and passed all data tests, using the `food_delivery/profiles.yml` fix. |
+| `enrich_reviews` | failed | The AI review-enrichment script failed - most likely because `OPENAI_API_KEY` is still blank in `airflow/.env`. |
+| `dbt_build_ai` | upstream_failed | Skipped, not a separate error - it depends on `enrich_reviews` finishing first. |
+
+**Next step to unblock `enrich_reviews`/`dbt_build_ai`:** set a real `OPENAI_API_KEY` in `airflow/.env`, then `docker compose down` / `docker compose up -d`, and retrigger the DAG.
 ```

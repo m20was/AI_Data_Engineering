@@ -48,6 +48,18 @@ In simple terms: the macro puts each model in the folder/schema name chosen in `
 4. AI workflows enrich review data, power RAG search, and generate text-to-SQL responses.
 5. Airflow orchestrates the pipeline, while Streamlit and Snowsight expose the results.
 
+## What dbt Actually Does (in this project)
+
+dbt is not just SQL run on raw tables - it is a framework that compiles SQL+Jinja files, figures out the dependency order from `ref()`/`source()` calls, materializes results as views/tables, and runs tests, all in one `dbt build`. The order is:
+
+```
+raw CSVs --(COPY INTO, Airflow's reload_raw task)--> FOOD_DELIVERY.RAW tables
+        --(staging models, read via source('raw', ...))--> staging views
+        --(marts models, read via ref('stg_*'))--> marts tables
+```
+
+dbt never touches the CSV files directly - it only runs SQL against the already-loaded raw Snowflake tables, then builds staging on top of raw, then marts on top of staging.
+
 ## dbt Staging Run
 
 Successful staging run:
@@ -188,6 +200,8 @@ The DAG's first task copies the raw CSV files into Snowflake `RAW` tables via `C
 Airflow runs locally on Docker, not a paid cloud service, so orchestration itself is free - only Snowflake/OpenAI usage costs money when the pipeline runs.
 
 **Required:** `food_delivery/profiles.yml` must exist for the `dbt_build_core`/`dbt_build_ai` tasks to work. The DAG runs dbt with `--profiles-dir /opt/airflow/dbt/food_delivery`, so dbt looks for the profile inside the project folder, not the usual `~/.dbt/profiles.yml`. This file reads `SNOWFLAKE_ACCOUNT`/`SNOWFLAKE_USER`/`SNOWFLAKE_PASSWORD` from environment variables via `env_var(...)`, so it holds no secrets and is safe to commit - do not delete it.
+
+**Current status:** `reload_raw` and `dbt_build_core` run successfully end-to-end. `enrich_reviews` currently fails (likely the missing `OPENAI_API_KEY`), which also skips `dbt_build_ai` (`upstream_failed`). See [notes/05-airflow-notes.md](notes/05-airflow-notes.md) for the run screenshot and details.
 
 These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
 

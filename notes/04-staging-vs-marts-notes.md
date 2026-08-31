@@ -1,5 +1,17 @@
 # Staging vs Marts — What's the Difference in This Project
 
+## What dbt actually is (not "just SQL on raw tables")
+
+dbt is a framework, not a single SQL run. It compiles SQL+Jinja files, figures out dependency order from `ref()`/`source()` calls, materializes results as views/tables, and runs tests - all in one `dbt build`. The real order in this project is:
+
+```
+raw CSVs --(COPY INTO, Airflow's reload_raw task)--> FOOD_DELIVERY.RAW tables
+        --(staging models, read via source('raw', ...))--> staging views
+        --(marts models, read via ref('stg_*'))--> marts tables
+```
+
+Staging is not "copied to raw" - raw comes first, staging reads from raw, marts reads from staging.
+
 ## TL;DR
 - **Staging** = 1:1 cleanup of raw source tables. One staging model per raw table, materialized as a **view**, schema `staging`.
 - **Marts** = business-ready dimensional/fact models and aggregates, built on top of staging models, materialized as a **table**, schema `marts`.
