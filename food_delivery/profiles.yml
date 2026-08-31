@@ -1,0 +1,13 @@
+food_delivery:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: DBT_ROLE
+      database: FOOD_DELIVERY
+      warehouse: FOOD_DELIVERY_WH
+      schema: STAGING
+      threads: 4
