@@ -12,6 +12,10 @@ models:
     marts:   { +materialized: table, +schema: marts }
 ```
 
+  ### Why `generate_schema_name.sql` matters
+
+  [generate_schema_name.sql](../food_delivery/macros/generate_schema_name.sql) is a reusable dbt macro in the `macros` folder. When a model has `+schema: staging` or `+schema: marts`, it returns exactly `staging` or `marts`. Without this macro, dbt normally combines the target schema and custom schema name. This project therefore gets the simple `STAGING` and `MARTS` schemas shown above.
+
 ## Simple side-by-side (plain language)
 
 | Staging | Marts |
@@ -24,6 +28,26 @@ models:
 | Cheap view, always fresh | Saved as a table, built to be fast to query |
 | Used only by other dbt models | Used by BI tools, dashboards, analysts |
 | Answers: "is the data clean?" | Answers: "what does the business want to know?" |
+
+## Build both layers together
+
+Run this command from the `food_delivery` folder:
+
+```bat
+dbt build
+```
+
+`dbt build` builds staging and marts in the right order, then runs their data tests. In the recorded run, it created 7 staging views, 7 table models, 2 incremental fact models, and passed 16 tests: 32 successful operations total.
+
+## View model documentation
+
+Run this command from the `food_delivery` folder:
+
+```bat
+dbt docs generate && dbt docs serve
+```
+
+It creates `target/catalog.json`, then opens the interactive dbt lineage and model documentation site at `http://localhost:8080`. Press `Ctrl+C` when finished.
 
 ## Staging layer (`models/staging/`)
 - Reads directly from `{{ source('raw', ...) }}` — never from another staging model or from marts.

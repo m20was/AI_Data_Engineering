@@ -31,7 +31,14 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 - `data/sample/` - compact Git-friendly subset of the datasets for demos and testing.
 - `aws/iam/` - IAM and trust policies for AWS and Snowflake integration.
 - `snowflake/` - SQL scripts for setup, storage integration, staging, raw tables, and loading.
+- `food_delivery/macros/` - reusable dbt Jinja macros, including custom schema naming.
 - `docs/` - supporting documentation and architecture visuals.
+
+## dbt Macros
+
+[generate_schema_name.sql](food_delivery/macros/generate_schema_name.sql) overrides dbt's default schema naming behavior. Models without a configured schema use the active target schema (`target.schema`); models configured with a schema use that exact schema name. This keeps staging models in `STAGING` and marts models in `MARTS`, rather than creating target-prefixed schema names.
+
+In simple terms: the macro puts each model in the folder/schema name chosen in `dbt_project.yml`. A staging model goes to `STAGING`; a marts model goes to `MARTS`.
 
 ## High-Level Flow
 
@@ -142,6 +149,16 @@ These marts provide the curated outputs for reporting, restaurant analysis, deli
 
 `_marts.yml` documents mart models and defines stronger data tests than staging, since marts are business-facing: `unique`/`not_null` on `fct_orders.order_id`, `accepted_values` on `order_status`, and a `relationships` test enforcing referential integrity between `fct_orders.customer_id` and `dim_customer.customer_id`. These `.yml` files are what `dbt test` (below) actually runs against - no test logic lives in the `.sql` files themselves.
 
+## dbt Build
+
+Build every model and run its associated data tests in one command:
+
+```bat
+dbt build
+```
+
+The recorded build completed successfully: 7 staging views, 7 table models, 2 incremental fact models, and 16 data tests (32 successful operations total).
+
 ## dbt Test
 
 Data tests (`unique`, `not_null`, `accepted_values`, `relationships`) validate staging and marts models:
@@ -151,3 +168,13 @@ dbt test
 ```
 
 All 16 data tests passed: primary key `unique`/`not_null` checks on staging models, `not_null`/`unique` on `fct_orders`, an `accepted_values` check on `order_status`, and a `relationships` (referential integrity) check between `fct_orders.customer_id` and `dim_customer.customer_id`.
+
+## dbt Documentation
+
+Generate the dbt documentation catalog and serve it locally:
+
+```bat
+dbt docs generate && dbt docs serve
+```
+
+The catalog is written to `food_delivery/target/catalog.json`. Open `http://localhost:8080` while the server is running, then press `Ctrl+C` to stop it.
