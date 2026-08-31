@@ -10,3 +10,29 @@ models:
       - name: order_status
         tests:
           - accepted_values: { values: ['Delivered','Cancelled','Refunded'] }
+  - name: fact_order_items
+    columns:
+      - name: order_item_id
+        tests: [unique, not_null]
+      - name: order_id
+        tests:
+          - relationships: { to: ref('fct_orders'), field: order_id }
+  - name: dim_customer
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+  - name: dim_restaurants
+    columns:
+      - name: restaurant_id
+        tests: [unique, not_null]
+  - name: dim_food
+    columns:
+      - name: f_id
+        tests: [unique, not_null]
+  - name: dim_date
+    columns:
+      - name: date_day
+        tests: [unique, not_null]
+  - name: mart_daily_city_revenue
+  - name: mart_delivery_sla
+  - name: mart_restaurant_performance

@@ -123,7 +123,7 @@ flowchart TB
 		end
 
 		subgraph MARTS[MARTS]
-			mart_daily_city_revenune[mart_daily_city_revenune]
+			mart_daily_city_revenue[mart_daily_city_revenue]
 			mart_delivery_sla[mart_delivery_sla]
 			mart_restaurant_performance[mart_restaurant_performance]
 			mart_review_insights[mart_review_insights]
@@ -150,7 +150,7 @@ Facts:
 
 Analytics marts:
 
-- `mart_daily_city_revenune` - daily city-level order volume, delivery, cancellation, GMV, and AOV metrics.
+- `mart_daily_city_revenue` - daily city-level order volume, delivery, cancellation, GMV, and AOV metrics.
 - `mart_delivery_sla` - delivery SLA view showing delivered orders by city and hour, plus p50 and p90 delivery times.
 - `mart_restaurant_performance` - restaurant performance summary with order count, revenue, customer rating, and average delivery time.
 - `mart_review_insights` - review sentiment and topic analysis by city.

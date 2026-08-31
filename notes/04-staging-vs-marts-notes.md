@@ -75,7 +75,7 @@ It creates `target/catalog.json`, then opens the interactive dbt lineage and mod
 - Split into dimensions and facts (classic star schema) plus some reporting-style aggregate marts:
   - **Dimensions**: [dim_customer.sql](../food_delivery/models/marts/dim_customer.sql) (adds derived `age_segment` bucket), dim_restaurants, dim_food, dim_date.
   - **Facts**: [fct_orders.sql](../food_delivery/models/marts/fct_orders.sql), [fact_order_items.sql](../food_delivery/models/marts/fact_order_items.sql) — join staging models together (e.g. order_items + orders) and are `materialized='incremental'` with `merge` strategy, filtering on `order_timestamp > max(existing)`.
-  - **Aggregate/reporting marts**: [mart_daily_city_revenune.sql](../food_delivery/models/marts/mart_daily_city_revenune.sql), mart_delivery_sla, mart_restaurant_performance — pre-aggregated metrics (GMV, cancel rate, AOV) grouped by date/city for BI consumption.
+  - **Aggregate/reporting marts**: [mart_daily_city_revenue.sql](../food_delivery/models/marts/mart_daily_city_revenue.sql), mart_delivery_sla, mart_restaurant_performance — pre-aggregated metrics (GMV, cancel rate, AOV) grouped by date/city for BI consumption.
 - Contains business logic: derived flags (`is_delivered`), segments (`age_segment`), rates (`cancel_rate`, `aov`), and referential-integrity tests (`relationships`, `accepted_values`) in [_marts.yml](../food_delivery/models/marts/_marts.yml).
 - Materialized as **tables** by default (fast reads for BI/reporting), with fact tables overriding to `incremental` for performance on large/growing data.
 

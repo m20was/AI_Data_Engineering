@@ -24,3 +24,11 @@ models:
     columns:
       - name: review_id
         tests: [unique, not_null]
+  - name: stg_food
+    columns:
+      - name: f_id
+        tests: [unique, not_null]
+  - name: stg_menu
+    columns:
+      - name: menu_id
+        tests: [unique, not_null]
