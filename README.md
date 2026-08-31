@@ -65,6 +65,11 @@ The run completed with 7 successful staging views:
 
 Captured after validating the dbt setup and opening the Snowflake database explorer on the `STG_RESTAURANTS` staging model. It confirms that the transformed restaurant data is loaded and queryable in the `FOOD_DELIVERY.STAGING` schema, with fields such as restaurant name, city, rating, rating count, cost for two, cuisine, and license number visible in the table view.
 
+### Why `.yml` files in `models/staging/`
+
+- `_sources.yml` / `_ai_sources.yml` declare the raw Snowflake tables (`source('raw', ...)`) that staging models select from, so dbt can track lineage and freshness.
+- `_staging.yml` documents each staging model's columns and attaches data tests (`unique`, `not_null`) on primary keys like `order_id`, `restaurant_id`, `customer_id`, `review_id` - these are `.yml`-only config, no SQL involved.
+
 ## dbt Marts Layer
 
 The marts layer turns the cleaned staging models into reusable business tables in the `FOOD_DELIVERY.MARTS` schema.
@@ -132,3 +137,17 @@ Analytics marts:
 - `mart_review_insights` - review sentiment and topic analysis by city.
 
 These marts provide the curated outputs for reporting, restaurant analysis, delivery monitoring, and AI-driven review insighting.
+
+### Why `.yml` files in `models/marts/`
+
+`_marts.yml` documents mart models and defines stronger data tests than staging, since marts are business-facing: `unique`/`not_null` on `fct_orders.order_id`, `accepted_values` on `order_status`, and a `relationships` test enforcing referential integrity between `fct_orders.customer_id` and `dim_customer.customer_id`. These `.yml` files are what `dbt test` (below) actually runs against - no test logic lives in the `.sql` files themselves.
+
+## dbt Test
+
+Data tests (`unique`, `not_null`, `accepted_values`, `relationships`) validate staging and marts models:
+
+```bat
+dbt test
+```
+
+All 16 data tests passed: primary key `unique`/`not_null` checks on staging models, `not_null`/`unique` on `fct_orders`, an `accepted_values` check on `order_status`, and a `relationships` (referential integrity) check between `fct_orders.customer_id` and `dim_customer.customer_id`.
