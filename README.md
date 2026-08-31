@@ -69,6 +69,18 @@ Captured after validating the dbt setup and opening the Snowflake database explo
 
 The marts layer turns the cleaned staging models into reusable business tables in the `FOOD_DELIVERY.MARTS` schema.
 
+To run all models in the marts directory/tag, use:
+
+```powershell
+dbt run --select marts
+```
+
+(or using the shorthand flag)
+
+```powershell
+dbt run -s marts
+```
+
 ```mermaid
 flowchart TB
 	subgraph STAGING_MARTS[STAGING_MARTS]

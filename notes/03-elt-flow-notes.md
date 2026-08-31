@@ -20,6 +20,20 @@ This file describes the ELT flow used in this project.
 - Staging models clean and standardize source tables such as restaurants, users, orders, menu, food, and reviews.
 - The transformed data is then available for analytics, reporting, and downstream AI workflows.
 
+### Running dbt Models
+
+To run all models in the marts directory/tag, use:
+
+```powershell
+dbt run --select marts
+```
+
+(or using the shorthand flag)
+
+```powershell
+dbt run -s marts
+```
+
 ## Why this is ELT
 
 The project follows ELT because the data is loaded into Snowflake before transformation happens.  
