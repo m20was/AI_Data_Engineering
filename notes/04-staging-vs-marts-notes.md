@@ -70,6 +70,14 @@ It creates `target/catalog.json`, then opens the interactive dbt lineage and mod
 - Materialized as **views** (cheap, always reflect latest raw data) since they're just cleanup passes.
 - Tested for `unique`/`not_null` on primary keys in [_staging.yml](../food_delivery/models/staging/_staging.yml).
 
+### Run only the staging models
+
+```bat
+dbt run --select staging
+```
+
+Use this when you want to build just the staging layer. It is the fastest way to test your cleanup and type-casting logic without rebuilding marts, and it matches the idea that staging is the first transformation step after raw data lands.
+
 ## Marts layer (`models/marts/`)
 - Reads only from `{{ ref('stg_*') }}` models (or other marts), never directly from sources.
 - Split into dimensions and facts (classic star schema) plus some reporting-style aggregate marts:
