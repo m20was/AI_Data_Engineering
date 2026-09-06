@@ -6,6 +6,7 @@
 *.env
 !example.env
 .creds
+profiles.yml
 
 # Raw data (too large for GitHub)
 data/*
@@ -23,6 +24,7 @@ food_delivery/target/
 food_delivery/dbt_packages/
 food_delivery/logs/
 food_delivery/.user.yml
+food_delivery/profiles.yml
 
 # Python
 __pycache__/
@@ -32,3 +34,5 @@ venv/
 
 # Generated outputs
 ai/review_embeddings.parquet
+food_delivery/profiles.yml
+food_delivery/profiles.yml
