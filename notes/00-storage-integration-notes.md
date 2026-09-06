@@ -18,7 +18,7 @@ The policy allows Snowflake to read from the bucket by granting `s3:GetObject`, 
 
 After the policy, you create the AWS IAM role and attach that policy to it. In this project, the role is `snowflake-s3-role`, and it is the identity Snowflake will assume when it needs to access S3.
 
-The next thing you did was set up the role trust relationship. That is what tells AWS which Snowflake-related identity can assume the role and under what condition. In this project, the trust policy uses `sts:AssumeRole` with an `sts:ExternalId` check so Snowflake can assume the role safely.
+The next thing you did was set up the role trust relationship. That is what tells AWS which Snowflake-related identity can assume the role and under what condition. After running [snowflake/02_storage_integration.sql](../snowflake/02_storage_integration.sql), Snowflake returned new `STORAGE_AWS_IAM_USER_ARN` and `STORAGE_AWS_EXTERNAL_ID` values from `DESC INTEGRATION`, and you copied those into the IAM role trust policy so AWS could trust Snowflake safely.
 
 ![AWS role trust relationship](../docs/screenshots/AWS-Role-trust.png)
 
@@ -34,7 +34,7 @@ The role screenshot above shows the trust policy that lets Snowflake assume `sno
 
 ## Snowflake connection success
 
-The storage integration was created successfully in Snowflake, which means the AWS policy, IAM role, and trust relationship were all wired up correctly.
+The storage integration was created successfully in Snowflake, which means the AWS policy, IAM role, and trust relationship were all wired up correctly. After running the Snowflake script, copying the returned `STORAGE_AWS_IAM_USER_ARN` and `STORAGE_AWS_EXTERNAL_ID` into the AWS trust policy, and updating AWS, the connection completed successfully.
 
 ![Storage integration success](../docs/screenshots/Storage-Integration-success.png)
 

@@ -24,7 +24,7 @@ CREATE OR REPLACE FILE FORMAT FOOD_DELIVERY.RAW.CSV_FMT
 --                             raw/orders/  raw/order_items/  raw/reviews/
 CREATE OR REPLACE STAGE FOOD_DELIVERY.RAW.FOOD_DELIVERY_RAW_STAGE
   STORAGE_INTEGRATION = FOOD_DELIVERY_S3_INT
-  URL = 's3://<BUCKET>/raw/'
+  URL = 's3://m20was-food-delivery/raw/'
   FILE_FORMAT = FOOD_DELIVERY.RAW.CSV_FMT;
 
 -- Confirm Snowflake can see your files (should list the seven table folders).
