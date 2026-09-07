@@ -49,3 +49,13 @@ If `dbt --version` says it is not recognized in `cmd`, make sure you are inside 
 ## dbt profiles file
 
 `C:\Users\Asus\.dbt\profiles.yml` is dbt's connection config file. It stores the profile name and warehouse settings dbt uses to connect, such as account, user, role, warehouse, database, schema, threads, and auth method.
+
+## Generate dbt docs
+
+From the `food_delivery` folder, run:
+
+```cmd
+dbt docs generate && dbt docs serve
+```
+
+`dbt docs generate` builds the documentation artifacts and lineage data, and `dbt docs serve` opens the local docs site so you can browse models, sources, and the graph in the browser.
