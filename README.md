@@ -22,7 +22,7 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 - AWS S3-based raw landing zone with Snowflake storage integration.
 - Snowflake raw, staging, marts, and AI layers.
 - dbt models for medallion transformations, incremental facts, dimensions, and curated marts.
-- AI review enrichment, RAG chat, and text-to-SQL capabilities.
+- AI review enrichment, Streamlit RAG chat, and text-to-SQL capabilities.
 - Orchestration with Airflow and delivery through Streamlit and Snowsight.
 
 ## Repository Layout
@@ -198,6 +198,18 @@ Airflow orchestrates the daily pipeline (`food_delivery_batch`) using Docker. Se
 The DAG's first task copies the raw CSV files into Snowflake `RAW` tables via `COPY INTO`, because dbt only runs SQL against Snowflake tables and cannot read CSV files directly - this load has to happen before any dbt model can run.
 
 Airflow runs locally on Docker, not a paid cloud service, so orchestration itself is free - only Snowflake/OpenAI usage costs money when the pipeline runs.
+
+## Streamlit RAG Chat
+
+The RAG chat app lives in [`ai/rag_chat.py`](ai/rag_chat.py). It loads reviews from Snowflake, finds the most relevant ones with a simple similarity score, and asks Gemini to answer from those reviews.
+
+Run it from the `ai` folder:
+
+```powershell
+streamlit run rag_chat.py
+```
+
+This is the app you started successfully on `http://localhost:8501`.
 
 **Required:** `food_delivery/profiles.yml` must exist for the `dbt_build_core`/`dbt_build_ai` tasks to work. The DAG runs dbt with `--profiles-dir /opt/airflow/dbt/food_delivery`, so dbt looks for the profile inside the project folder, not the usual `~/.dbt/profiles.yml`. This file reads `SNOWFLAKE_ACCOUNT`/`SNOWFLAKE_USER`/`SNOWFLAKE_PASSWORD` from environment variables via `env_var(...)`, so it holds no secrets and is safe to commit - do not delete it.
 

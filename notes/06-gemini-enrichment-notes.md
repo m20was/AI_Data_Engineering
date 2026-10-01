@@ -276,6 +276,25 @@ The current notebook behavior is:
 - stops cleanly when quota is reached
 - saves successful rows to Snowflake
 
+## Streamlit RAG Chat
+
+You also added a small Streamlit app in `ai/rag_chat.py`.
+
+What it does:
+
+- reads review rows from `FOOD_DELIVERY.STAGING.STG_REVIEWS`
+- ranks the reviews with a simple similarity score
+- sends the top matches to Gemini for the final answer
+- shows the answer and the matched reviews in Streamlit
+
+How to run it:
+
+```powershell
+streamlit run rag_chat.py
+```
+
+You confirmed it starts on `http://localhost:8501`.
+
 In the last successful run, the pipeline processed 5 candidate reviews, classified 1 successfully, and saved that single enriched row to Snowflake before stopping on quota exhaustion.
 
 ## Important takeaway
