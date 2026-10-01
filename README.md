@@ -211,9 +211,11 @@ streamlit run rag_chat.py
 
 This is the app you started successfully on `http://localhost:8501`.
 
-**Required:** `food_delivery/profiles.yml` must exist for the `dbt_build_core`/`dbt_build_ai` tasks to work. The DAG runs dbt with `--profiles-dir /opt/airflow/dbt/food_delivery`, so dbt looks for the profile inside the project folder, not the usual `~/.dbt/profiles.yml`. This file reads `SNOWFLAKE_ACCOUNT`/`SNOWFLAKE_USER`/`SNOWFLAKE_PASSWORD` from environment variables via `env_var(...)`, so it holds no secrets and is safe to commit - do not delete it.
+### Application Walkthrough
 
-**Current status:** `reload_raw` and `dbt_build_core` run successfully end-to-end. `enrich_reviews` currently fails (likely the missing `OPENAI_API_KEY`), which also skips `dbt_build_ai` (`upstream_failed`). See [notes/05-airflow-notes.md](notes/05-airflow-notes.md) for the run screenshot and details.
+![RAG chat Demo](docs/screenshots/ragchat-demo.gif)
+
+Open the app, ask one question, and show the answer with the matching reviews.
 
 These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
 
