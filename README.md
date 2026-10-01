@@ -217,6 +217,18 @@ This is the app you started successfully on `http://localhost:8501`.
 
 Open the app, ask one question, and show the answer with the matching reviews.
 
+## Streamlit Text to SQL
+
+The text-to-SQL app lives in [`ai/text_to_sql.py`](ai/text_to_sql.py). It takes a question in plain English, asks Gemini to write the SQL, and runs it in Snowflake.
+
+### Application Walkthrough
+
+![Text to SQL Demo](docs/screenshots/text-to-sql-demo.gif)
+
+Open the app, ask one question, and show the SQL, the full output table, and the chart.
+
+Example question: `Top 10 cities by Gross Merchandise Value (GMV)`.
+
 These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
 
 From the `airflow` folder:
