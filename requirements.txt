@@ -1,0 +1,9 @@
+streamlit
+pandas
+numpy
+snowflake-connector-python
+python-dotenv
+google-genai
+google-generativeai
+scikit-learn
+pyarrow
