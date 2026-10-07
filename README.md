@@ -271,7 +271,7 @@ streamlit run text_to_sql.py
 
 ### Application Walkthrough
 
-![Text to SQL cinematic demo](docs/screenshots/text-to-sql-cinematic.gif)
+![Text to SQL Demo](docs/screenshots/text_to_sql_image.png)
 
 Open the app, ask one question, and show the SQL, the full output table, and the chart.
 
