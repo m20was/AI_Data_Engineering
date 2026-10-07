@@ -198,7 +198,7 @@ What it does:
 1. sends the prompt and user question to Gemini
 2. asks Gemini to respond as JSON
 3. extracts the `sql` value from the JSON response
-4. removes any old `ZOMATO` prefixes
+4. keeps the SQL focused on `FOOD_DELIVERY` tables only
 5. trims whitespace and trailing semicolons
 
 Why each step matters:
@@ -206,7 +206,7 @@ Why each step matters:
 - `client.models.generate_content(...)` is the Gemini call
 - `response_mime_type="application/json"` nudges Gemini toward structured output
 - `json.loads(response.text)` converts the response into Python data
-- `.replace("ZOMATO.MARTS.", "").replace("ZOMATO.", "")` cleans leftover old project prefixes
+- the SQL generator now uses only `FOOD_DELIVERY` table names and no longer needs old project prefixes
 
 Interview explanation:
 

@@ -9,7 +9,7 @@ from google.genai import types
 
 load_dotenv(r"D:\Workspace\workspace\Analytics\apps\AI_Data_Engineering\ai\.env", override=True)
 
-MODEL = "gemini-3.6-flash"
+MODEL = "gemini-3.5-flash-lite"
 
 FORBIDDEN_WORDS = ["drop", "delete", "truncate", "alter", "update", "insert", "create", "replace", "grant", "revoke"]
 
@@ -44,7 +44,7 @@ You are a Snowflake SQL expert. Write ONE SELECT query that answers the question
  
 Rules:
 - SELECT queries only, never modify data.
-- Use bare table names (FCT_ORDERS, not ZOMATO.MARTS.FCT_ORDERS).
+- Use bare table names from FOOD_DELIVERY only (for example, FCT_ORDERS, DIM_RESTAURANTS, MART_DAILY_CITY_REVENUE).
 - Add a LIMIT of 100 or less, unless the question asks for a single total.
 - Reply as JSON in this exact format: {{"sql": "your query here"}}
  
@@ -73,11 +73,11 @@ def generate_sql(question):
         config=types.GenerateContentConfig(
             temperature=0,
             response_mime_type="application/json",
+            max_output_tokens=256,
         ),
     )
     sql = json.loads(response.text)["sql"]
-
-    sql = sql.replace("ZOMATO.MARTS.", "").replace("ZOMATO.", "")
+    st.caption(f"Using {MODEL}")
     return sql.strip().rstrip(";")
 
 
@@ -99,7 +99,7 @@ def run_query(sql):
 
 
 st.title("Chat with your Food Delivery Data")
-st.caption(f"Ask in English, {MODEL} writes the SQL, Snowflake runs it")
+st.caption("Ask in English, Gemini writes the SQL, Snowflake runs it")
 
 with st.sidebar:
     st.header("Example Questions")

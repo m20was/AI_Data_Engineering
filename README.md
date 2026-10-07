@@ -25,6 +25,12 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 - AI review enrichment, Streamlit RAG chat, and text-to-SQL capabilities.
 - Orchestration with Airflow and delivery through Streamlit and Snowsight.
 
+### Text to SQL Walkthrough
+
+![Text to SQL cinematic demo](docs/screenshots/text-to-sql-cinematic.gif)
+
+Run `ai/text_to_sql.py` and scroll through the full output table and chart as the SQL executes.
+
 ## Repository Layout
 
 - `data/` - sample CSV datasets used as inputs.
@@ -265,7 +271,7 @@ streamlit run text_to_sql.py
 
 ### Application Walkthrough
 
-![Text to SQL Demo](docs/screenshots/text_to_sql_image.png)
+![Text to SQL cinematic demo](docs/screenshots/text-to-sql-cinematic.gif)
 
 Open the app, ask one question, and show the SQL, the full output table, and the chart.
 
