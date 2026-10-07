@@ -2,6 +2,8 @@
 
 End-to-end batch data pipeline for food-delivery analytics, combining raw CSV ingestion, Snowflake warehouse modeling, dbt transformations, Airflow orchestration, and AI-powered review workflows.
 
+Deployed Streamlit app: [Streamlit](https://ai-data-eng.streamlit.app/)
+
 A production-style data engineering project that takes Zomato-style food delivery data from raw CSVs to AI-powered analytics:
 
 **Food Delivery Dataset → Amazon S3 → Snowflake → dbt → Airflow → AI (Gemini, used to save cost)**
@@ -30,6 +32,10 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 ![Text to SQL cinematic demo](docs/screenshots/text-to-sql-cinematic.gif)
 
 Run `ai/text_to_sql.py` and scroll through the full output table and chart as the SQL executes.
+
+### Streamlit Deployed
+
+![Streamlit deployed app](docs/screenshots/Streamlit_Deployed.png)
 
 ## Repository Layout
 
@@ -262,6 +268,8 @@ Open the app, ask one question, and show the answer with the matching reviews.
 ## Streamlit Text to SQL
 
 The text-to-SQL app lives in [`ai/text_to_sql.py`](ai/text_to_sql.py). It takes a question in plain English, asks Gemini to write the SQL, and runs it in Snowflake.
+
+Deployed app: [Streamlit](https://ai-data-eng.streamlit.app/)
 
 Run it from the `ai` folder:
 
