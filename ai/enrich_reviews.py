@@ -5,7 +5,7 @@ import snowflake.connector
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-load_dotenv(r"D:\Workspace\workspace\Analytics\apps\AI_Data_Engineering\ai\.env", override=True)
+load_dotenv(".env", override=True)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Gemini model and review labels.
