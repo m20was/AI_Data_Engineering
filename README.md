@@ -4,9 +4,9 @@ End-to-end batch data pipeline for food-delivery analytics, combining raw CSV in
 
 A production-style data engineering project that takes Zomato-style food delivery data from raw CSVs to AI-powered analytics:
 
-**Food Delivery Dataset → Amazon S3 → Snowflake → dbt → Airflow → AI (OpenAI)**
+**Food Delivery Dataset → Amazon S3 → Snowflake → dbt → Airflow → AI (Gemini, used to save cost)**
 
-The dataset lands in an S3 data lake and flows into Snowflake through a storage integration, where dbt transforms it through medallion layers: RAW (Bronze) tables loaded via `COPY INTO`, cleaned STAGING (Silver) views, and business-ready MARTS (Gold) with dimensions, incremental facts, and analytics marts. Apache Airflow orchestrates the pipeline as one daily DAG. On top of the warehouse sits an AI layer powered by OpenAI: LLM enrichment turns free-text reviews into structured, queryable columns; RAG enables chat with reviews; and text-to-SQL supports natural language queries over the warehouse. Streamlit serves the dashboards and AI apps.
+The dataset lands in an S3 data lake and flows into Snowflake through a storage integration, where dbt transforms it through medallion layers: RAW (Bronze) tables loaded via `COPY INTO`, cleaned STAGING (Silver) views, and business-ready MARTS (Gold) with dimensions, incremental facts, and analytics marts. Apache Airflow orchestrates the pipeline as one daily DAG. On top of the warehouse sits an AI layer powered by Gemini (used to save cost): LLM enrichment turns free-text reviews into structured, queryable columns; RAG enables chat with reviews; and text-to-SQL supports natural language queries over the warehouse. Streamlit serves the dashboards and AI apps.
 
 ## Architecture
 
@@ -33,6 +33,16 @@ The dataset lands in an S3 data lake and flows into Snowflake through a storage 
 - `snowflake/` - SQL scripts for setup, storage integration, staging, raw tables, and loading.
 - `food_delivery/macros/` - reusable dbt Jinja macros, including custom schema naming.
 - `docs/` - supporting documentation and architecture visuals.
+
+## AWS IAM Setup
+
+The AWS setup uses IAM policies and a trust relationship so Snowflake can read from the S3 raw landing zone.
+
+![AWS policy](docs/screenshots/AWS-policy.png)
+
+![AWS role trust](docs/screenshots/AWS-Role-trust.png)
+
+These screenshots show the S3 access policy and the role trust configuration used for the Snowflake storage integration.
 
 ## dbt Macros
 
@@ -195,9 +205,31 @@ The catalog is written to `food_delivery/target/catalog.json`. Open `http://loca
 
 Airflow orchestrates the daily pipeline (`food_delivery_batch`) using Docker. See `airflow/docker-compose.yaml`, `airflow/Dockerfile`, and `airflow/dags/food_delivery_batch.py`.
 
+![Airflow DAG run](docs/screenshots/airflow-dag-run.png)
+
 The DAG's first task copies the raw CSV files into Snowflake `RAW` tables via `COPY INTO`, because dbt only runs SQL against Snowflake tables and cannot read CSV files directly - this load has to happen before any dbt model can run.
 
 Airflow runs locally on Docker, not a paid cloud service, so orchestration itself is free - only Snowflake/OpenAI usage costs money when the pipeline runs.
+
+These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
+
+From the `airflow` folder:
+
+```bat
+docker compose build
+docker compose up -d
+```
+
+- `docker compose build` builds the custom Airflow image from `Dockerfile`. Run it the first time, and again any time `Dockerfile` changes.
+- `docker compose up -d` starts all the services (`postgres`, `airflow-init`, `apiserver`, `scheduler`, `dag-processor`) in the background, so your terminal is free to use for other things.
+
+Open `http://localhost:8080`, then start `food_delivery_batch` from the Airflow UI. To stop everything:
+
+```bat
+docker compose down
+```
+
+`docker compose down` is the opposite of `docker compose up -d` - it stops and removes the containers (and network), it does not start anything. Airflow's metadata in the `pgdata` volume is kept, so `docker compose up -d` again picks up where you left off. Add `-v` (`docker compose down -v`) only if you also want to delete that stored data.
 
 ## Streamlit RAG Chat
 
@@ -221,30 +253,16 @@ Open the app, ask one question, and show the answer with the matching reviews.
 
 The text-to-SQL app lives in [`ai/text_to_sql.py`](ai/text_to_sql.py). It takes a question in plain English, asks Gemini to write the SQL, and runs it in Snowflake.
 
+Run it from the `ai` folder:
+
+```powershell
+streamlit run text_to_sql.py
+```
+
 ### Application Walkthrough
 
-![Text to SQL Demo](docs/screenshots/text-to-sql-demo.gif)
+![Text to SQL Demo](docs/screenshots/text_to_sql_image.png)
 
 Open the app, ask one question, and show the SQL, the full output table, and the chart.
 
 Example question: `Top 10 cities by Gross Merchandise Value (GMV)`.
-
-These commands need Docker installed and running. Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for your OS, then open it and wait until it says Docker is running before continuing.
-
-From the `airflow` folder:
-
-```bat
-docker compose build
-docker compose up -d
-```
-
-- `docker compose build` builds the custom Airflow image from `Dockerfile`. Run it the first time, and again any time `Dockerfile` changes.
-- `docker compose up -d` starts all the services (`postgres`, `airflow-init`, `apiserver`, `scheduler`, `dag-processor`) in the background, so your terminal is free to use for other things.
-
-Open `http://localhost:8080`, then start `food_delivery_batch` from the Airflow UI. To stop everything:
-
-```bat
-docker compose down
-```
-
-`docker compose down` is the opposite of `docker compose up -d` - it stops and removes the containers (and network), it does not start anything. Airflow's metadata in the `pgdata` volume is kept, so `docker compose up -d` again picks up where you left off. Add `-v` (`docker compose down -v`) only if you also want to delete that stored data.
