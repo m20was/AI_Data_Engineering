@@ -251,6 +251,8 @@ Final successful run:
 
 The RAG chat app lives in [`ai/rag_chat.py`](ai/rag_chat.py). It loads reviews from Snowflake, finds the most relevant ones with a simple similarity score, and asks Gemini to answer from those reviews.
 
+This is a lightweight RAG pipeline: it retrieves the top matching reviews with TF-IDF similarity before sending them to Gemini for the final answer.
+
 Run it from the `ai` folder:
 
 ```powershell
